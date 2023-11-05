@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName="DeveloperStateSO")]
 public class DeveloperState : ScriptableObject
 {
+    public SceneManager.Positions State { get => _state; }
+
+    [SerializeField] private SceneManager.Positions _state;
     [SerializeField] private float _energyCoeff;
     [SerializeField] private float _hungerCoeff;
     [SerializeField] private float _wastesCoeff;

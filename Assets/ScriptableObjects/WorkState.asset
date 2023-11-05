@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92d7324c99c51b046bb21dd345cb401d, type: 3}
   m_Name: WorkState
   m_EditorClassIdentifier: 
+  _state: 2
   _energyCoeff: -1
   _hungerCoeff: 0.5
   _wastesCoeff: 0.5

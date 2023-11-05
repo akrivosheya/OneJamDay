@@ -6,8 +6,19 @@ using UnityEngine.Events;
 public class Developer : MonoBehaviour
 {
     public SceneManager.Positions CurrentPosition { private get; set; }
-    public bool IsActivated { get; set; } = false;
+    public SceneManager.Positions State { get => _currentState.State; }
+    public bool IsActivated { 
+        get => _isActivated;
+
+        set
+        {
+            _isActivated = value;
+            _onChange.Invoke();
+        }
+    }
     public int MadeGames { get; private set; } = 0;
+
+    private bool _isActivated = false;
 
     public readonly float MaxStat = 100;
 
