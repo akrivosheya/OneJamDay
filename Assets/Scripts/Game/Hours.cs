@@ -5,10 +5,12 @@ using UnityEngine.Events;
 
 public class Hours : MonoBehaviour
 {
-    public readonly float MAX_SECONDS = 20f;
     public float Seconds { get; private set; } = 0;
+    public float MaxSeconds { get => _maxSeconds; }
+    
     [SerializeField] private SceneManager _sceneManager;
     [SerializeField] private Developer _developer;
+    [SerializeField] private float _maxSeconds = 20f;
 
     private UnityEvent _onChange = new UnityEvent();
 
@@ -34,9 +36,9 @@ public class Hours : MonoBehaviour
                 _sceneManager.CompleteGame();
                 Seconds = 0;
             }
-            else if (MAX_SECONDS <= Seconds)
+            else if (_maxSeconds <= Seconds)
             {
-                _sceneManager.StopDeveloping();
+                _sceneManager.StopDeveloping(SceneManager.GameEnds.TimeOut);
             }
         }
     }

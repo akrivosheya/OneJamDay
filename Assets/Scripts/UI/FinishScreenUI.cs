@@ -1,22 +1,50 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class FinishScreenUI : MonoBehaviour
 {
     [SerializeField] private GameObject _screen;
+    [SerializeField] private Image _endSprite;
+    [SerializeField] private Text _endText;
     [SerializeField] private Text _results;
     [SerializeField] private Developer _developer;
 
+    [SerializeField] private Sprite _timeOutSprite;
+    [SerializeField] private Sprite _hungrySprite;
+    [SerializeField] private Sprite _energySprite;
+    [SerializeField] private Sprite _toiletSprite;
+    
+    [SerializeField] private string _timeOutString;
+    [SerializeField] private string _hungryString;
+    [SerializeField] private string _energyString;
+    [SerializeField] private string _toiletString;
+
+    private Dictionary<SceneManager.GameEnds, Sprite> _endSprites = new Dictionary<SceneManager.GameEnds, Sprite>();
+    private Dictionary<SceneManager.GameEnds, string> _endStrings = new Dictionary<SceneManager.GameEnds, string>();
+
     void Start()
     {
+        _endSprites.Add(SceneManager.GameEnds.TimeOut, _timeOutSprite);
+        _endSprites.Add(SceneManager.GameEnds.HungerOverflow, _hungrySprite);
+        _endSprites.Add(SceneManager.GameEnds.EnergyOut, _energySprite);
+        _endSprites.Add(SceneManager.GameEnds.WastesOverflow, _toiletSprite);
+        
+        _endStrings.Add(SceneManager.GameEnds.TimeOut, _timeOutString);
+        _endStrings.Add(SceneManager.GameEnds.HungerOverflow, _hungryString);
+        _endStrings.Add(SceneManager.GameEnds.EnergyOut, _energyString);
+        _endStrings.Add(SceneManager.GameEnds.WastesOverflow, _toiletString);
+
         _screen.SetActive(false);
     }
 
-    public void Activate()
+    public void Activate(SceneManager.GameEnds end)
     {
         _screen.SetActive(true);
-        _results.text = _developer.MadeGames.ToString();
+        _results.text = $"Сделанные игры:\n\t{_developer.MadeGames}";
+        _endText.text = _endStrings[end];
+        _endSprite.sprite = _endSprites[end];
     }
 }

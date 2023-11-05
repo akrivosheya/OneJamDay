@@ -21,6 +21,6 @@ public class HoursUI : MonoBehaviour
 
     void OnHoursChange()
     {
-        _slider.value = _hours.Seconds / _hours.MAX_SECONDS;
+        _slider.value = _hours.Seconds / _hours.MaxSeconds;
     }
 }

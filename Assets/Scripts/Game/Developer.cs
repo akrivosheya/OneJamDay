@@ -23,6 +23,7 @@ public class Developer : MonoBehaviour
     public readonly float MaxStat = 100;
 
     [SerializeField] private NotificationUI _developersMind;
+    [SerializeField] private SceneManager _sceneManager;
 
     [SerializeField] private float _initEnergy;
     [SerializeField] private float _initHunger;
@@ -43,6 +44,7 @@ public class Developer : MonoBehaviour
     private Dictionary<Stats, float> _stats = new Dictionary<Stats, float>();
     private Dictionary<SceneManager.Positions, DeveloperState> _states = new Dictionary<SceneManager.Positions, DeveloperState>();
     private Dictionary<Stats, List<string>> _allDevelopersMinds = new Dictionary<Stats, List<string>>();
+    private Dictionary<Stats, SceneManager.GameEnds> _allEnds = new Dictionary<Stats, SceneManager.GameEnds>();
     private UnityEvent _onChange = new UnityEvent();
 
     public enum Stats
@@ -65,6 +67,10 @@ public class Developer : MonoBehaviour
         _allDevelopersMinds.Add(Stats.Hunger, _hungryMinds);
         _allDevelopersMinds.Add(Stats.Wastes, _toiletMinds);
         _allDevelopersMinds.Add(Stats.Progress, _madeGameMinds);
+
+        _allEnds.Add(Stats.Energy, SceneManager.GameEnds.EnergyOut);
+        _allEnds.Add(Stats.Hunger, SceneManager.GameEnds.HungerOverflow);
+        _allEnds.Add(Stats.Wastes, SceneManager.GameEnds.WastesOverflow);
 
         _states.Add(SceneManager.Positions.Kitchen, _kitchenState);
         _states.Add(SceneManager.Positions.Shower, _showerState);
@@ -95,6 +101,12 @@ public class Developer : MonoBehaviour
         else if (_stats[stat] > MaxStat)
         {
             _stats[stat] = MaxStat;
+        }
+        
+        if (stat != Stats.Progress && IsCriticalValue(stat))
+        {
+            _sceneManager.StopDeveloping(_allEnds[stat]);
+            return;
         }
 
         _onChange.Invoke();
@@ -160,5 +172,27 @@ public class Developer : MonoBehaviour
         string mind = currentMinds[Random.Range(0, currentMinds.Count - 1)];
         _developersMind.SetText(mind);
         _developersMind.Notify();
+    }
+
+    private bool IsCriticalValue(Stats stat)
+    {
+        switch (stat)
+        {
+            case Stats.Energy:
+                if (_stats[stat] == 0)
+                {
+                    return true;
+                }
+                break;
+            case Stats.Hunger:
+            case Stats.Wastes:
+                if (_stats[stat] == MaxStat)
+                {
+                    return true;
+                }
+                break;
+        }
+
+        return false;
     }
 }

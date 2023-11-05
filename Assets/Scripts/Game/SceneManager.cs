@@ -28,6 +28,14 @@ public class SceneManager : MonoBehaviour
         Bedroom,
     }
 
+    public enum GameEnds
+    {
+        TimeOut,
+        EnergyOut,
+        HungerOverflow,
+        WastesOverflow,
+    }
+
     void Start() {
         Managers.Audio.PlayMusic(_gameMusic);
 
@@ -50,11 +58,11 @@ public class SceneManager : MonoBehaviour
         _developer.IsActivated = !_developer.IsActivated;
     }
 
-    public void StopDeveloping()
+    public void StopDeveloping(GameEnds end)
     {
         SetButtonsActive(false);
         _developer.IsActivated = false;
-        _finishScreen.Activate();
+        _finishScreen.Activate(end);
     }
 
     public void CompleteGame()
