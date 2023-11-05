@@ -21,7 +21,11 @@ public class MainMenuUI : MonoBehaviour
 
     public void OnStartGame()
     {
-
+        if (!Managers.Audio.CanChange)
+        {
+            return;
+        }
+        
         UnityEngine.SceneManagement.SceneManager.LoadScene(_gameScene);
     }
     

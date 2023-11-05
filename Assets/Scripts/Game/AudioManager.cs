@@ -8,7 +8,10 @@ public class AudioManager : MonoBehaviour
     public bool IsReady { get; private set; } = false;
     public bool CanChange { get => !_isChanging; }
     [SerializeField] private string _audioFolder = "Audio/";
+    [SerializeField] private string _musicKey = "musicVolume";
+    [SerializeField] private string _soundKey = "soundVolume";
     [SerializeField] private float _changeSpeed = 1f;
+    [SerializeField] private float _defaultVolume = 0.5f;
 
     public float MusicVolume 
     {
@@ -22,22 +25,33 @@ public class AudioManager : MonoBehaviour
     }
     public float SoundVolume 
     {
-        get => _soundsSource.volume;
+        get => _regularSoundSource.volume;
 
         set
         {
             float volume = FixVolume(value);
-            _soundsSource.volume = volume;
+            _regularSoundSource.volume = volume;
+            _oneShotSoundSource.volume = volume;
         }
     }
 
     [SerializeField] private AudioSource _mainMusicSource;
     [SerializeField] private AudioSource _secondMusicSource;
-    [SerializeField] private AudioSource _soundsSource;
+    [SerializeField] private AudioSource _regularSoundSource;
+    [SerializeField] private AudioSource _oneShotSoundSource;
     private bool _isChanging = false;
     
     void Start()
     {
+        if (!PlayerPrefs.HasKey(_musicKey))
+        {
+            PlayerPrefs.SetFloat(_musicKey, _defaultVolume);
+            PlayerPrefs.SetFloat(_soundKey, _defaultVolume);
+        }
+
+        MusicVolume = PlayerPrefs.GetFloat(_musicKey);
+        SoundVolume = PlayerPrefs.GetFloat(_soundKey);
+
         _mainMusicSource.ignoreListenerPause = true;
         _secondMusicSource.ignoreListenerPause = true;
         IsReady = true;
@@ -46,7 +60,19 @@ public class AudioManager : MonoBehaviour
     public void PlaySound(string sound)
     {
         AudioClip clip = Resources.Load<AudioClip>(_audioFolder + sound);
-        _soundsSource.PlayOneShot(clip);
+        _oneShotSoundSource.PlayOneShot(clip);
+    }
+    
+    public void PlayRegularSound(string sound)
+    {
+        AudioClip clip = Resources.Load<AudioClip>(_audioFolder + sound);
+        _regularSoundSource.clip = clip;
+        _regularSoundSource.Play();
+    }
+    
+    public void StopRegularSound()
+    {
+        _regularSoundSource.Stop();
     }
 
     public void PlayMusic(string music)
@@ -85,13 +111,13 @@ public class AudioManager : MonoBehaviour
         while (coeff < 1)
         {
             _secondMusicSource.volume = maxVolume * coeff;
-            _mainMusicSource.volume = maxVolume * (1 - coeff);
+            _mainMusicSource.volume = maxVolume * (maxVolume - coeff);
             coeff += _changeSpeed * Time.unscaledDeltaTime;
 
             yield return null;
         }
 
-        _secondMusicSource.volume = 1;
+        _secondMusicSource.volume = maxVolume;
         _mainMusicSource.volume = 0;
         _mainMusicSource.Stop();
 

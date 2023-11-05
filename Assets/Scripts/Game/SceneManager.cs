@@ -18,6 +18,8 @@ public class SceneManager : MonoBehaviour
 
     [SerializeField] private float _moveSpeed = 0.1f;
     [SerializeField] private string _gameMusic = "GameMusic";
+    [SerializeField] private string _finishMusic = "FinishMusic";
+    [SerializeField] private string _madeGameSound;
     private Dictionary<Positions, Vector3> _positions = new Dictionary<Positions, Vector3>();
 
     public enum Positions
@@ -60,6 +62,7 @@ public class SceneManager : MonoBehaviour
 
     public void StopDeveloping(GameEnds end)
     {
+        Managers.Audio.PlayMusic(_finishMusic);
         SetButtonsActive(false);
         _developer.IsActivated = false;
         _finishScreen.Activate(end);
@@ -67,6 +70,7 @@ public class SceneManager : MonoBehaviour
 
     public void CompleteGame()
     {
+        Managers.Audio.PlaySound(_madeGameSound);
         _finishedGameNotification.Notify();
         _developer.ResetStat(Developer.Stats.Progress);
         _developer.FinishGame();
@@ -74,7 +78,12 @@ public class SceneManager : MonoBehaviour
 
     public void LoadScene(string scene)
     {
-        //возможно нужно вернуть timeScale
+        if (!Managers.Audio.CanChange)
+        {
+            return;
+        }
+        
+        Managers.Audio.StopRegularSound();
         UnityEngine.SceneManagement.SceneManager.LoadScene(scene);
     }
 

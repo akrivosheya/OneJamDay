@@ -25,15 +25,12 @@ public class DeveloperInRoom : MonoBehaviour
     {
         if (_developer.State == _stateForActivation)
         {
-            Debug.Log("state");
             if (_developer.IsActivated)
             {
-            Debug.Log("activated");
                 _animator.SetBool(_activationKey, true);
             }
             else
             {
-            Debug.Log("unactivated");
                 _animator.SetBool(_activationKey, false);
             }
         }

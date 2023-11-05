@@ -12,11 +12,25 @@ public class EmotionsUI : MonoBehaviour
     [SerializeField] private Sprite _toiletSprite;
     [SerializeField] private Sprite _sleepySprite;
 
+    [SerializeField] private string _hungrySound;
+    [SerializeField] private string _toiletSound;
+    [SerializeField] private string _lowEnergySound;
+    
+    private Dictionary<Developer.Stats, string> _allSounds = new Dictionary<Developer.Stats, string>();
+
     private Dictionary<Developer.Stats, Sprite> _emotions = new Dictionary<Developer.Stats, Sprite>();
 
     void Awake()
     {
         _developer.AddListener(OnDeveloperChange);
+
+        _emotions.Add(Developer.Stats.Energy, _sleepySprite);
+        _emotions.Add(Developer.Stats.Hunger, _hungrySprite);
+        _emotions.Add(Developer.Stats.Wastes, _toiletSprite);
+
+        _allSounds.Add(Developer.Stats.Energy, _lowEnergySound);
+        _allSounds.Add(Developer.Stats.Hunger, _hungrySound);
+        _allSounds.Add(Developer.Stats.Wastes, _toiletSound);
     }
 
     void OnDestroy()
@@ -24,15 +38,10 @@ public class EmotionsUI : MonoBehaviour
         _developer.RemoveListener(OnDeveloperChange);
     }
 
-    void Start()
-    {
-        _emotions.Add(Developer.Stats.Energy, _sleepySprite);
-        _emotions.Add(Developer.Stats.Hunger, _hungrySprite);
-        _emotions.Add(Developer.Stats.Wastes, _toiletSprite);
-    }
-
     private void OnDeveloperChange()
     {
+        Sprite previousSprite = _image.sprite;
+
         float energy = _developer.GetStat(Developer.Stats.Energy);
         float hunger = _developer.GetStat(Developer.Stats.Hunger);
         float wastes = _developer.GetStat(Developer.Stats.Wastes);
@@ -55,6 +64,16 @@ public class EmotionsUI : MonoBehaviour
         else
         {
             _image.sprite = _normalSprite;
+        }
+
+        if (previousSprite != _image.sprite)
+        {
+            if (_image.sprite == _normalSprite)
+            {
+                return;
+            }
+
+            Managers.Audio.PlaySound(_allSounds[minStat]);
         }
     }
 }

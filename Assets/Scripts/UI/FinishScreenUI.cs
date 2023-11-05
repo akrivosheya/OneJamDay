@@ -17,13 +17,13 @@ public class FinishScreenUI : MonoBehaviour
     [SerializeField] private Sprite _energySprite;
     [SerializeField] private Sprite _toiletSprite;
     
-    [SerializeField] private string _timeOutString;
-    [SerializeField] private string _hungryString;
-    [SerializeField] private string _energyString;
-    [SerializeField] private string _toiletString;
+    [SerializeField] private List<string> _timeOutString;
+    [SerializeField] private List<string> _hungryString;
+    [SerializeField] private List<string> _energyString;
+    [SerializeField] private List<string> _toiletString;
 
     private Dictionary<SceneManager.GameEnds, Sprite> _endSprites = new Dictionary<SceneManager.GameEnds, Sprite>();
-    private Dictionary<SceneManager.GameEnds, string> _endStrings = new Dictionary<SceneManager.GameEnds, string>();
+    private Dictionary<SceneManager.GameEnds, List<string>> _endStrings = new Dictionary<SceneManager.GameEnds, List<string>>();
 
     void Start()
     {
@@ -44,7 +44,8 @@ public class FinishScreenUI : MonoBehaviour
     {
         _screen.SetActive(true);
         _results.text = $"Сделанные игры:\n\t{_developer.MadeGames}";
-        _endText.text = _endStrings[end];
+        List<string> currentTexts = _endStrings[end];
+        _endText.text = currentTexts[Random.Range(0, currentTexts.Count - 1)];
         _endSprite.sprite = _endSprites[end];
     }
 }

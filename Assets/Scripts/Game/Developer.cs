@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 public class Developer : MonoBehaviour
 {
-    public SceneManager.Positions CurrentPosition { private get; set; }
     public SceneManager.Positions State { get => _currentState.State; }
     public bool IsActivated { 
         get => _isActivated;
@@ -14,6 +13,14 @@ public class Developer : MonoBehaviour
         {
             _isActivated = value;
             _onChange.Invoke();
+            if (_isActivated)
+            {
+                Managers.Audio.PlayRegularSound(_allRegularSounds[State]);
+            }
+            else
+            {
+                Managers.Audio.StopRegularSound();
+            }
         }
     }
     public int MadeGames { get; private set; } = 0;
@@ -40,11 +47,17 @@ public class Developer : MonoBehaviour
     [SerializeField] private List<string> _toiletMinds;
     [SerializeField] private List<string> _lowEnergyMinds;
 
+    [SerializeField] private string _workRegularSound;
+    [SerializeField] private string _eatRegularSound;
+    [SerializeField] private string _toiletRegularSound;
+    [SerializeField] private string _restRegularSound;
+
     private DeveloperState _currentState;
     private Dictionary<Stats, float> _stats = new Dictionary<Stats, float>();
     private Dictionary<SceneManager.Positions, DeveloperState> _states = new Dictionary<SceneManager.Positions, DeveloperState>();
     private Dictionary<Stats, List<string>> _allDevelopersMinds = new Dictionary<Stats, List<string>>();
     private Dictionary<Stats, SceneManager.GameEnds> _allEnds = new Dictionary<Stats, SceneManager.GameEnds>();
+    private Dictionary<SceneManager.Positions, string> _allRegularSounds = new Dictionary<SceneManager.Positions, string>();
     private UnityEvent _onChange = new UnityEvent();
 
     public enum Stats
@@ -67,6 +80,11 @@ public class Developer : MonoBehaviour
         _allDevelopersMinds.Add(Stats.Hunger, _hungryMinds);
         _allDevelopersMinds.Add(Stats.Wastes, _toiletMinds);
         _allDevelopersMinds.Add(Stats.Progress, _madeGameMinds);
+
+        _allRegularSounds.Add(SceneManager.Positions.Work, _workRegularSound);
+        _allRegularSounds.Add(SceneManager.Positions.Kitchen, _eatRegularSound);
+        _allRegularSounds.Add(SceneManager.Positions.Shower, _toiletRegularSound);
+        _allRegularSounds.Add(SceneManager.Positions.Bedroom, _restRegularSound);
 
         _allEnds.Add(Stats.Energy, SceneManager.GameEnds.EnergyOut);
         _allEnds.Add(Stats.Hunger, SceneManager.GameEnds.HungerOverflow);
