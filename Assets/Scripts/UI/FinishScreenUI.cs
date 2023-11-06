@@ -8,7 +8,6 @@ public class FinishScreenUI : MonoBehaviour
 {
     [SerializeField] private GameObject _screen;
     [SerializeField] private Image _endSprite;
-    [SerializeField] private Text _endText;
     [SerializeField] private Text _results;
     [SerializeField] private Developer _developer;
 
@@ -43,9 +42,9 @@ public class FinishScreenUI : MonoBehaviour
     public void Activate(SceneManager.GameEnds end)
     {
         _screen.SetActive(true);
-        _results.text = $"Сделанные игры:\n\t{_developer.MadeGames}";
         List<string> currentTexts = _endStrings[end];
-        _endText.text = currentTexts[Random.Range(0, currentTexts.Count - 1)];
+        _results.text = currentTexts[Random.Range(0, currentTexts.Count - 1)];
+        _results.text = $"{currentTexts[Random.Range(0, currentTexts.Count - 1)]}\nСделанные игры: {_developer.MadeGames}";
         _endSprite.sprite = _endSprites[end];
     }
 }
