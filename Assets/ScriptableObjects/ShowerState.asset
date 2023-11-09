@@ -15,6 +15,6 @@ MonoBehaviour:
   _state: 1
   _energyCoeff: 0
   _hungerCoeff: 0
-  _wastesCoeff: -1
+  _wastesCoeff: -2
   _progressCoeff: 0
   _commonMul: 8
